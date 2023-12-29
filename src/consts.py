@@ -34,3 +34,12 @@ ratio_name = {
         "Dividend yield ratio"
     ]
 }
+
+yaxis_not_percentage = [
+    "EPS",
+    "Times interest earned ratio",
+    "Cash coverage ratio",
+    "Debt-to-equity ratio",
+    "P_E ratio",
+    "Dividend yield ratio"
+]

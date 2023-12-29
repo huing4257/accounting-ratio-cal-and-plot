@@ -72,11 +72,31 @@ def cal_ratio(ratio_name, sheet: pd.DataFrame) -> list:
         current_liabilities = np.array(current_liabilities)
         ratios = current_assets / current_liabilities
     elif ratio_name == 'Quick ratio':
-        pass
+        marketable_securities = sheet.loc[sheet.iloc[:, 0].str.startswith("Marketable Securities"),date_list]
+        marketable_securities = np.array(marketable_securities)        
+        receivables = sheet.loc[sheet.iloc[:, 0].str.startswith("Net Accounts Receivable"),date_list]
+        receivables = np.array(receivables)
+        cash = sheet.loc[sheet.iloc[:, 0].str.strip() == 'Cash & Cash Equivalents',date_list]
+        cash = np.array(cash)
+        current_liabilities = sheet.loc[sheet.iloc[:, 0].str.strip() == '流动负债',date_list]
+        current_liabilities = np.array(current_liabilities)
+        ratios = (marketable_securities + receivables + cash) / current_liabilities
+        # set nan to 0
+        for i in range(6):
+            if np.isnan(ratios[0][i]):
+                ratios[0][i] = 0
     elif ratio_name == 'Cash ratio':
-        pass
+        cash = sheet.loc[sheet.iloc[:, 0].str.strip() == 'Cash & Cash Equivalents',date_list]
+        cash = np.array(cash)
+        current_liabilities = sheet.loc[sheet.iloc[:, 0].str.strip() == '流动负债',date_list]
+        current_liabilities = np.array(current_liabilities)
+        ratios = cash / current_liabilities
     elif ratio_name == 'Times interest earned ratio':
-        pass
+        interest_expense = sheet.loc[sheet.iloc[:, 0].str.strip() == 'Interest Expense',date_list]
+        interest_expense = np.array(interest_expense)
+        income_tax_expense = sheet.loc[sheet.iloc[:, 0].str.strip() == 'Income Tax Expense',date_list]
+        income_tax_expense = np.array(income_tax_expense)
+        ratios = (net_income + interest_expense + income_tax_expense) / interest_expense
     elif ratio_name == 'Cash coverage ratio':
         pass
     elif ratio_name == 'Debt-to-equity ratio':
@@ -91,6 +111,12 @@ def cal_ratio(ratio_name, sheet: pd.DataFrame) -> list:
         total_liabilities = np.array(total_liabilities)
         total_equity = np.array(total_equity)
         ratios = total_liabilities / total_equity
+    elif ratio_name == 'P_E ratio':
+        market_price = sheet.loc[sheet.iloc[:, 0].str.startswith("Market Price per Share"),date_list]
+        market_price = np.array(market_price)
+        eps = sheet.loc[sheet.iloc[:, 0].str.strip() == 'EPS(基本)',date_list]
+        eps = np.array(eps)
+        ratios = market_price / eps
 
     ratios = ratios.flatten().tolist()
 
